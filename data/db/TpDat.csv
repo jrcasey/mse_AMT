@@ -1,0 +1,5 @@
+﻿TpRxns,TpMets,kcat,A,TpMets_MW,TpRxns_MW,TpRxns_Sense
+AmmoniaTRANS,Ammonia,1.37E-22,3.91E-16,1.70E+01,5.95E+04,-1.00E+00
+OrthophosphateTRANS,Orthophosphate,3.18E-22,4.17E-16,9.80E+01,4.05E+04,-1.00E+00
+NitrateTRANS,Nitrate,8.19E-22,5.67E-16,6.30E+01,6.55E+04,-1.00E+00
+NitriteTRANS,Nitrite,8.19E-22,5.67E-16,4.61E+01,6.55E+04,-1.00E+00

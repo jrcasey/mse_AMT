@@ -1,0 +1,67 @@
+﻿varID,varName,varUnits
+Chl_GFF,Chlorophyll (GFF),micrograms L-1
+Chl_0_2,Chlorophyll (> 0.2 micron),micrograms L-1
+Chl_5,Chlorophyll (> 5 micron),micrograms L-1
+Chl_2to5,Chlorophyll (2 to 5 micron),micrograms L-1
+Chl_0_2to2,Chlorophyll (0.2 to 2 micron),micrograms L-1
+Chl_10,Chlorophyll (> 10 micron),micrograms L-1
+Chl_5to10,Chlorophyll (5 to 10 micron),micrograms L-1
+Hbac1,Heterotrophic bacteria and archaea,cells ml-1
+Cyrptophytes,Cyrptophytes,cells ml-1
+Cocolithophores,Cocolithophores,cells ml-1
+Syn,Synechococcus,cells ml-1
+Pro,Prochlorococcus,cells ml-1
+Peuk,Picoeukaryotes,cells ml-1
+Hbac2,Heterotrophic bacteria and archaea,cells ml-1
+Neuk,Nanoeukaryotes,cells ml-1
+DMSP_particulate,DMSP (particulate),nM
+DMSP_dissolved_plus_particulate,DMSP (total),nM
+DMS_dissolved_plus_particulate,DMSP (dissolved),nM
+GP,Gross Photosynthesis (Winkler),micromol C L-1 d-1 
+GP_se,Gross Photosynthesis (Winkler; standard error),micromol C L-1 d-1 
+NCP,Net Community Production (Winkler),micromol C L-1 d-1 
+DCR,Dark Community Respiration,micromol C L-1 d-1 
+HPLC_Allo,Allo,ng L-1
+HPLC_19But,19-But,ng L-1
+HPLC_Chl_b,Chl b,ng L-1
+HPLC_Chl_c2,Chl c2,ng L-1
+HPLC_Chl_c3,Chl c3,ng L-1
+HPLC_Chl_a,Chl a,ng L-1
+HPLC_Diad,Diad,ng L-1
+HPLC_dv_Chl_a,divinyl Chl a,ng L-1
+HPLC_dv_Chl_b,divinyl Chl b,ng L-1
+HPLC_Fuco,Fuco,ng L-1
+HPLC_19Hex,Hex,ng L-1
+HPLC_Peri,Peri,ng L-1
+HPLC_Viol,Viol,ng L-1
+HPLC_Zea,Zea,ng L-1
+Ammonium,Ammonium,nM
+Nitrite,Nitrite,nM
+NitratePlusNitrite,Nitrate plus Nitrite,nM
+Orthophosphate,Orthophosphate,nM
+Silicate,Silicate,nM
+POC,Particulate organic carbon,microM
+PON,Particulate organic nitrogen,microM
+PP_14C_0_2to2,Primary Production (14C; 0.2 to 2 micron),micromol C L-1 d-1 
+PP_14C_2plus,Primary Production (14C; > 2 micron),
+Zinser_QPCR,Zinser_qPCR (total),cells ml-1
+HLI,Prochlorococcus HLI abundance,cells ml-1
+HLII,Prochlorococcus HLII abundance,cells ml-1
+Zinser_MIT_9211,Prochlorococcus eMIT9211 abundance,cells ml-1
+LLI,Prochlorococcus LLI abundance,cells ml-1
+LLII_LLIII,Prochlorococcus LLII/LLIII abundance,cells ml-1
+LLIV,Prochlorococcus LLIV abundance,cells ml-1
+Density,Density,g L-1
+Temp,Temperature,degrees C
+Salinity,Salinity,asu
+PAR,Photosynthetically Active Radiation,micromoles photons m-2 s-1
+Fluor_Chl_a,Chlorophyll a (CTD Fluorometer),
+kd412,Attenuation coefficient (412nm),
+kd443,Attenuation coefficient (443nm),
+kd490,Attenuation coefficient (490nm),
+kd510,Attenuation coefficient (510nm),
+kd560,Attenuation coefficient (560nm),
+kd620,Attenuation coefficient (620nm),
+kd665,Attenuation coefficient (665nm),
+kd685,Attenuation coefficient (685nm),
+,,

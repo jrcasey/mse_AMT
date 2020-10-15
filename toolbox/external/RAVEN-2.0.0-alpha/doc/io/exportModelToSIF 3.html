@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of exportModelToSIF</title>
+  <meta name="keywords" content="exportModelToSIF">
+  <meta name="description" content="exportModelToSIF">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html v1.5 &copy; 2003-2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<div><a href="../index.html">Home</a> &gt;  <a href="index.html">io</a> &gt; exportModelToSIF.m</div>
+
+<!--<table width="100%"><tr><td align="left"><a href="../index.html"><img alt="<" border="0" src="../left.png">&nbsp;Master index</a></td>
+<td align="right"><a href="index.html">Index for io&nbsp;<img alt=">" border="0" src="../right.png"></a></td></tr></table>-->
+
+<h1>exportModelToSIF
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>exportModelToSIF</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>function exportModelToSIF(model,fileName,graphType,rxnLabels,metLabels) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> exportModelToSIF
+   Exports a constraint-based model to a SIF file
+
+   model         a model structure
+   fileName      the filename  to export the model to
+   graphType     the type of graph to export to (opt, default 'rc')
+                 'rc'  reaction-compound
+                 'rr'  reaction-reaction
+                 'cc'  compound-compound
+   rxnLabels     cell array with labels for reactions (opt, default
+                 model.rxns)
+   metLabels     cell array with labels for metabolites (opt, default
+                 model.mets)
+
+   Usage: exportModelToSIF(model,fileName,graphType,rxnLabels,metLabels)
+
+   Rasmus Agren, 2014-01-08</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function exportModelToSIF(model,fileName,graphType,rxnLabels,metLabels)</a>
+0002 <span class="comment">% exportModelToSIF</span>
+0003 <span class="comment">%   Exports a constraint-based model to a SIF file</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   model         a model structure</span>
+0006 <span class="comment">%   fileName      the filename  to export the model to</span>
+0007 <span class="comment">%   graphType     the type of graph to export to (opt, default 'rc')</span>
+0008 <span class="comment">%                 'rc'  reaction-compound</span>
+0009 <span class="comment">%                 'rr'  reaction-reaction</span>
+0010 <span class="comment">%                 'cc'  compound-compound</span>
+0011 <span class="comment">%   rxnLabels     cell array with labels for reactions (opt, default</span>
+0012 <span class="comment">%                 model.rxns)</span>
+0013 <span class="comment">%   metLabels     cell array with labels for metabolites (opt, default</span>
+0014 <span class="comment">%                 model.mets)</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   Usage: exportModelToSIF(model,fileName,graphType,rxnLabels,metLabels)</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%   Rasmus Agren, 2014-01-08</span>
+0019 <span class="comment">%</span>
+0020 
+0021 <span class="keyword">if</span> nargin&lt;3
+0022    graphType=<span class="string">'rc'</span>;
+0023 <span class="keyword">end</span>
+0024 
+0025 <span class="keyword">if</span> nargin&lt;4
+0026    rxnLabels=model.rxns;
+0027 <span class="keyword">end</span>
+0028 <span class="keyword">if</span> nargin&lt;5
+0029    metLabels=model.mets;
+0030 <span class="keyword">end</span>
+0031 <span class="keyword">if</span> isempty(rxnLabels)
+0032    rxnLabels=model.rxns;
+0033 <span class="keyword">end</span>
+0034 <span class="keyword">if</span> isempty(metLabels)
+0035    metLabels=model.mets;
+0036 <span class="keyword">end</span>
+0037 
+0038 <span class="keyword">if</span> ~strcmpi(graphType,<span class="string">'rc'</span>) &amp;&amp; ~strcmpi(graphType,<span class="string">'rr'</span>) &amp;&amp; ~strcmpi(graphType,<span class="string">'cc'</span>)
+0039     EM=<span class="string">'The graph type is incorrect'</span>;
+0040    dispEM(EM);
+0041 <span class="keyword">end</span>
+0042 
+0043 <span class="keyword">if</span> numel(rxnLabels)~=numel(unique(rxnLabels))
+0044     EM=<span class="string">'Not all reaction labels are unique'</span>;
+0045     dispEM(EM,false);
+0046 <span class="keyword">end</span>
+0047 <span class="keyword">if</span> numel(metLabels)~=numel(unique(metLabels))
+0048     EM=<span class="string">'Not all metabolite labels are unique'</span>;
+0049     dispEM(EM,false);
+0050 <span class="keyword">end</span>
+0051 
+0052 <span class="keyword">if</span> strcmpi(graphType,<span class="string">'rc'</span>)
+0053    G=model.S;
+0054    A=rxnLabels;
+0055    B=metLabels;
+0056 <span class="keyword">end</span>
+0057 <span class="keyword">if</span> strcmpi(graphType,<span class="string">'rr'</span>)
+0058    G=model.S'*model.S;
+0059    A=rxnLabels;
+0060    B=rxnLabels;
+0061 <span class="keyword">end</span>
+0062 <span class="keyword">if</span> strcmpi(graphType,<span class="string">'cc'</span>)
+0063    <span class="comment">%A metabolite is linked to all products of the reactions that it participates in</span>
+0064    <span class="comment">%If G=model.S*model.S' then all connections will be double, which looks</span>
+0065    <span class="comment">%weird</span>
+0066    irrevModel=convertToIrrev(model);
+0067    G=sparse(numel(model.mets),numel(model.mets));
+0068    <span class="keyword">for</span> i=1:numel(model.mets)
+0069       I=irrevModel.S(i,:)&lt;0; <span class="comment">%Get the reactions in which it is a substrate</span>
+0070       [J, ~]=find(irrevModel.S(:,I)&gt;0);
+0071       G(J,i)=1;
+0072    <span class="keyword">end</span>
+0073    A=metLabels;
+0074    B=metLabels;
+0075 <span class="keyword">end</span>
+0076 
+0077 fid=fopen(fileName,<span class="string">'w'</span>);
+0078 
+0079 <span class="keyword">for</span> i=1:size(G,2)
+0080     I=G(:,i)~=0;
+0081     nodes=setdiff(B(I),A(i)); <span class="comment">%Don't include connection to itself</span>
+0082     <span class="keyword">if</span> ~isempty(nodes)
+0083         nNodes=numel(nodes);
+0084         nodes(1:nNodes-1)=strcat(nodes(1:nNodes-1),{<span class="string">'\t'</span>});
+0085         fullString=[nodes{:}];
+0086         fprintf(fid,[A{i} <span class="string">'\t'</span> graphType <span class="string">'\t'</span> fullString <span class="string">'\n'</span>]);
+0087     <span class="keyword">end</span>
+0088 <span class="keyword">end</span>
+0089 fclose(fid);
+0090 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 28-Feb-2017 23:41:43 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" title="Matlab Documentation in HTML">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
