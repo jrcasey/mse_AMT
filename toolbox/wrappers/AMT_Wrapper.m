@@ -4,7 +4,8 @@
 %% set root dir (for server only)
 %cd Documents/MATLAB/GitHub/mse_AMT/
 %addpath '/nfs/cnhlab001/cnh/projects/jrcasey/mse/test/mosek/9.1/toolbox/r2015a'	
-addpath(genpath('~/mse_AMT/'));	
+addpath(genpath('~/mse_AMT/'));
+addpath(genpath('~/mosek/'));
 cd ~/mse_AMT/	
 %% Version
 version = strcat({'_v'},datestr(date,'yyyymmdd'))
