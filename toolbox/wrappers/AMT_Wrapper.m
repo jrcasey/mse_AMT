@@ -79,7 +79,7 @@ idxMat = zeros(Gridding.nStations,Gridding.nZ,Gridding.nStr);
 nIterations = size(idxMat,1).*size(idxMat,2).*size(idxMat,3);
 
 % get job array index
-job_array_idx = str2num(getenv('SLURM_ARRAY_TASK_ID')) + 14720;
+job_array_idx = str2num(getenv('SLURM_ARRAY_TASK_ID')) + 29440;
 
 % After running compile_AMT_subjobs.m, sometimes there are missing entries.
 % Save those missing entry indices in a file called missingFileNo.mat and
