@@ -1,7 +1,7 @@
 #!/bin/bash
 START=1
-END=14720
-STEP=460
+END=58
+STEP=58
 SLEEP=600 # 10 minutes
 
 

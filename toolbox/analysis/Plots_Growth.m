@@ -151,13 +151,15 @@ hold on
 h2 = plot(x2,y2,'.r','MarkerSize',20)
 h3 = plot(x3,y3,'.g','MarkerSize',20)
 h4 = plot(x4,y4,'.b','MarkerSize',20)
-h5 = plot(x5,y5,'.c','MarkerSize',20)
+%h5 = plot(x5,y5,'.c','MarkerSize',20)
 xlabel('Growth rate [h^-^1]')
 ylabel('Abundance [cells ml^-^1]')
 set(gca,'FontSize',20)
 set(gca,'YScale','log')
 title('Population')
-legend([h1(1) h2(1) h3(1) h4(1) h5(1)],'MSE vs. Johnson et al., 2006','Vaulot et al., 1995','Liu et al., 1995','Liu et al., 1997','Ribalet','Location','SouthEast')
+%legend([h1(1) h2(1) h3(1) h4(1) h5(1)],'MSE vs. Johnson et al., 2006','Vaulot et al., 1995','Liu et al., 1995','Liu et al., 1997','Ribalet','Location','SouthEast')
+legend([h1(1) h2(1) h3(1) h4(1)],'MSE vs. Johnson et al., 2006','Vaulot et al., 1995','Liu et al., 1995','Liu et al., 1997','Location','SouthEast')
+
 fileName = strcat('/Users/jrcasey/Documents/New Structure/Projects/CBIOMES_Project/mse_AMT_Project/Figures/Growth/Population/','AMT13_Growth_Abundance_vs_literature',var,'.eps');
 
 saveas(fig,fileName,'epsc')
