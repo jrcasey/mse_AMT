@@ -87,6 +87,66 @@ ylabel(hc, strcat(varName,' [',varUnits,']'))
 title(varName)
 set(gca,'FontSize',20)
 
+
+
+fig = figure
+subplot(2,2,1)
+var = 'Ammonia';
+varName = 'log_1_0 Ammonia';
+varUnits = 'nM';
+z = log10(CruiseData.(var)(Gridding.stationsVec2,:)');
+imagesc(x,y,z)
+xlabel('Latitude')
+ylabel('Depth')
+colormap('jet')
+hc = colorbar
+ylabel(hc, strcat(varName,' [',varUnits,']'))
+%title(varName)
+set(gca,'FontSize',20)
+
+subplot(2,2,2)
+var = 'Nitrite';
+varName = 'log_1_0 Nitrite';
+varUnits = 'nM';
+z = log10(CruiseData.(var)(Gridding.stationsVec2,:)');
+imagesc(x,y,z)
+xlabel('Latitude')
+ylabel('Depth')
+colormap('jet')
+hc = colorbar
+ylabel(hc, strcat(varName,' [',varUnits,']'))
+%title(varName)
+set(gca,'FontSize',20)
+
+subplot(2,2,3)
+var = 'Nitrate';
+varName = 'log_1_0 Nitrate';
+varUnits = 'nM';
+z = log10(CruiseData.(var)(Gridding.stationsVec2,:)');
+imagesc(x,y,z)
+xlabel('Latitude')
+ylabel('Depth')
+colormap('jet')
+hc = colorbar
+ylabel(hc, strcat(varName,' [',varUnits,']'))
+%title(varName)
+set(gca,'FontSize',20)
+
+subplot(2,2,4)
+var = 'Orthophosphate';
+varName = 'log_1_0 Phosphate';
+varUnits = 'nM';
+z = log10(CruiseData.(var)(Gridding.stationsVec2,:)');
+imagesc(x,y,z)
+xlabel('Latitude')
+ylabel('Depth')
+colormap('jet')
+hc = colorbar
+ylabel(hc, strcat(varName,' [',varUnits,']'))
+%title(varName)
+set(gca,'FontSize',20)
+
+
 %% A selected depth profile
 
 station_idx = 14;
@@ -155,6 +215,205 @@ colormap('jet')
 hc = colorbar
 ylabel(hc, 'Irradiance [mmol photons m^-^2 s^-^1 nm^-^1]')
 set(gca,'FontSize',20)
+
+
+
+
+%% DIN with T overlay
+
+z1 = CruiseData.Ammonia(Gridding.stationsVec2,:)' + CruiseData.Nitrite(Gridding.stationsVec2,:)' + CruiseData.Nitrate(Gridding.stationsVec2,:)'
+z2 = CruiseData.T(Gridding.stationsVec2,:)'
+T_levels = [10 20 25];
+
+fig = figure
+h1 = imagesc(x,y,z1./1000)
+hold on
+[c,h2] = contour(x,y,z2,T_levels);
+set(h2,'LineWidth',3,'ShowText','on','LineColor','w')
+clabel(c,h2,'FontSize',20,'Color','w')
+xlabel('Latitude')
+ylabel('Depth')
+colormap('jet')
+hc = colorbar
+ylabel(hc, 'DIN [\muM]')
+set(gca,'FontSize',20)
+
+
+%% Prochlorococcus with PAR overlay
+z1 = CruiseData.Pro(Gridding.stationsVec2,:)'
+z2 = log10(CruiseData.PAR(Gridding.stationsVec2,:)')
+PAR_levels = [1 2 3];
+z2 = CruiseData.PAR(Gridding.stationsVec2,:)'
+PAR_levels = [1 10 100 1000];
+
+fig = figure
+h1 = imagesc(x,y,z1)
+hold on
+[c,h2] = contour(x,y,z2,PAR_levels);
+set(h2,'LineWidth',3,'ShowText','on','LineColor','w')
+clabel(c,h2,'FontSize',20,'Color','w')
+xlabel('Latitude')
+ylabel('Depth')
+colormap('jet')
+hc = colorbar
+ylabel(hc, 'Prochlorococcus [cells ml^-^1]')
+set(gca,'FontSize',20)
+
+
+%% Supplementary section figures
+
+% Physics (4 panel contours)
+figure
+subplot(2,2,1)
+z = CruiseData.T(Gridding.stationsVec2,:)';
+imagesc(x,y,z)
+xlabel('Latitude')
+ylabel('Depth')
+colormap('jet')
+hc = colorbar
+ylabel(hc, 'Temperature [degrees C]')
+set(gca,'FontSize',20)
+subplot(2,2,2)
+z = CruiseData.Salinity(Gridding.stationsVec2,:)';
+imagesc(x,y,z)
+xlabel('Latitude')
+ylabel('Depth')
+colormap('jet')
+hc = colorbar
+ylabel(hc, 'Salinity [psu]')
+set(gca,'FontSize',20)
+subplot(2,2,3)
+z = 1000 + CruiseData.Density(Gridding.stationsVec2,:)';
+imagesc(x,y,z)
+set(gca,'clim',[1022 1027])
+xlabel('Latitude')
+ylabel('Depth')
+colormap('jet')
+hc = colorbar
+ylabel(hc, 'Density [kg m^-^3]')
+set(gca,'FontSize',20)
+subplot(2,2,4)
+z = log10(CruiseData.PAR(Gridding.stationsVec2,:)');
+imagesc(x,y,z)
+xlabel('Latitude')
+ylabel('Depth')
+colormap('jet')
+hc = colorbar
+ylabel(hc, 'log_1_0 PAR [\mumol photons m^-^2 s^-^1]')
+set(gca,'FontSize',20)
+
+% Nutrients
+figure
+subplot(2,2,1)
+z = log10(CruiseData.Ammonia(Gridding.stationsVec2,:)');
+imagesc(x,y,z)
+xlabel('Latitude')
+ylabel('Depth')
+colormap('jet')
+hc = colorbar
+ylabel(hc, 'log_1_0 Ammonia [nM]')
+set(gca,'FontSize',20)
+subplot(2,2,2)
+z = log10(CruiseData.Nitrite(Gridding.stationsVec2,:)');
+imagesc(x,y,z)
+xlabel('Latitude')
+ylabel('Depth')
+colormap('jet')
+hc = colorbar
+ylabel(hc, 'log_1_0 Nitrite [nM]')
+set(gca,'FontSize',20)
+subplot(2,2,3)
+z = log10(CruiseData.Nitrate(Gridding.stationsVec2,:)');
+imagesc(x,y,z)
+xlabel('Latitude')
+ylabel('Depth')
+colormap('jet')
+hc = colorbar
+ylabel(hc, 'log_1_0 Nitrate [nM]')
+set(gca,'FontSize',20)
+subplot(2,2,4)
+z = log10(CruiseData.Orthophosphate(Gridding.stationsVec2,:)');
+imagesc(x,y,z)
+xlabel('Latitude')
+ylabel('Depth')
+colormap('jet')
+hc = colorbar
+ylabel(hc, 'log_1_0 Phosphate [nM]')
+set(gca,'FontSize',20)
+
+% Biology
+figure
+subplot(4,2,1)
+z = CruiseData.Fluor_Chl_a(Gridding.stationsVec2,:)';
+imagesc(x,y,z)
+set(gca,'clim',[0 0.7])
+xlabel('Latitude')
+ylabel('Depth')
+colormap('jet')
+hc = colorbar
+ylabel(hc, 'Chlorophyll a [mg m^-^3]')
+set(gca,'FontSize',20)
+subplot(4,2,2)
+z = CruiseData.Pro(Gridding.stationsVec2,:)';imagesc(x,y,z)
+xlabel('Latitude')
+ylabel('Depth')
+colormap('jet')
+hc = colorbar
+ylabel(hc, 'Prochlorococcus [cells ml^-^1]')
+set(gca,'FontSize',20)
+subplot(4,2,3)
+z = CruiseData.Syn(Gridding.stationsVec2,:)';imagesc(x,y,z)
+xlabel('Latitude')
+ylabel('Depth')
+colormap('jet')
+hc = colorbar
+ylabel(hc, 'Synechococcus [cells ml^-^1]')
+set(gca,'FontSize',20)
+subplot(4,2,4)
+z = CruiseData.Peuk(Gridding.stationsVec2,:)';imagesc(x,y,z)
+xlabel('Latitude')
+ylabel('Depth')
+colormap('jet')
+hc = colorbar
+ylabel(hc, 'Picoeukaryotes [cells ml^-^1]')
+set(gca,'FontSize',20)
+subplot(4,2,5)
+z = CruiseData.Neuk(Gridding.stationsVec2,:)';imagesc(x,y,z)
+xlabel('Latitude')
+ylabel('Depth')
+colormap('jet')
+hc = colorbar
+ylabel(hc, 'Nanoeukaryotes [cells ml^-^1]')
+set(gca,'FontSize',20)
+subplot(4,2,6)
+z = CruiseData.Cocolithophores(Gridding.stationsVec2,:)';imagesc(x,y,z)
+xlabel('Latitude')
+ylabel('Depth')
+colormap('jet')
+hc = colorbar
+ylabel(hc, 'Cocolithophores [cells ml^-^1]')
+set(gca,'FontSize',20)
+subplot(4,2,7)
+z = CruiseData.Cyrptophytes(Gridding.stationsVec2,:)';imagesc(x,y,z)
+xlabel('Latitude')
+ylabel('Depth')
+colormap('jet')
+hc = colorbar
+ylabel(hc, 'Cryptophytes [cells ml^-^1]')
+set(gca,'FontSize',20)
+subplot(4,2,8)
+z = CruiseData.Hbac1(Gridding.stationsVec2,:)';imagesc(x,y,z)
+xlabel('Latitude')
+ylabel('Depth')
+colormap('jet')
+hc = colorbar
+ylabel(hc, 'Heterotrophic bacteria [cells ml^-^1]')
+set(gca,'FontSize',20)
+
+
+
+
+
 
 
 

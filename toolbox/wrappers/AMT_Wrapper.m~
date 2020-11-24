@@ -79,7 +79,7 @@ idxMat = zeros(Gridding.nStations,Gridding.nZ,Gridding.nStr);
 nIterations = size(idxMat,1).*size(idxMat,2).*size(idxMat,3);
 
 % get job array index
-job_array_idx = str2num(getenv('SLURM_ARRAY_TASK_ID')) + 14720;
+job_array_idx = str2num(getenv('SLURM_ARRAY_TASK_ID'));
 
 % After running compile_AMT_subjobs.m, sometimes there are missing entries.
 % Save those missing entry indices in a file called missingFileNo.mat and
@@ -97,6 +97,9 @@ station = Gridding.stationsVec{i};
 depth = Gridding.depthVec(j);
 strName = Gridding.strNameVec{k};
 
+depthVec = 10:40:200
+for a = 1:numel(depthVec)
+    depth = depthVec(a);
 %Solution = struct;
 tic;
 [Solution] = AMT_Simulation(strName, station, depth, Gridding, FileNames, Options);
@@ -109,6 +112,15 @@ Solution.station = station;
 if ~Options.saveStrMod
     Solution.StrMod = [];
 end
+
+tempSol{a} = Solution;
+end
+
+for a = 1:numel(depthVec)
+    nTp(a,:) = tempSol{a}.TpOpt;
+    mu(a) = tempSol{a}.Growth;
+end
+
 
 %% Save solution
 

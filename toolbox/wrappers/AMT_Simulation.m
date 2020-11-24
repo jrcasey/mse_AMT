@@ -141,8 +141,8 @@ TCorr = TemperatureCorr(OGTDat,strName,T);
 %% Solve FBA and temporarily store output
 [sol hsSolOut] = solveLP(StrMod4,1);
 if sol.stat==1
-    fluxes = sol.x.*TCorr;
-    growth = -sol.f.*TCorr;
+    fluxes = sol.x.*TCorr(1);
+    growth = -sol.f.*TCorr(1);
     shadow = hsSolOut.y;
 else
     fluxes = zeros(numel(StrMod4.rxns),1);

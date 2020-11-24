@@ -15,7 +15,7 @@ end
 % Cell size and mass
 r = 1e-6 .* x(1); % m cell-1
 SA = 4.* pi() .* (r.^2); % m2 cell-1
-q_native = 1e-15 * 4/3.*pi().*((1e6*r).^3) .* 280; % g DW cell-1
+q_native = 1e-15 * 4/3.*pi().*((1e6*r).^3) .* 280 .* 2; % g DW cell-1
 
 % Tp abundance, size and mass
 n = x(2:5); % Tp cell-1

@@ -35,6 +35,308 @@ for i = 1:numel(ecotypeList)
 end
 ecotypeList2 = [{'HLI'},{'HLII'},{'LLI'},{'LLII/LLIII'},{'LLIV'}];
 
+%% Contours of S_star for population
+
+
+figure
+subplot(2,1,1)
+imagesc(x,y,CruiseData.Ammonia(Gridding.stationsVec2,:)')
+set(gca,'clim',[0 60])
+xlabel('Latitude')
+ylabel('Depth')
+set(gca,'FontSize',20)
+hc = colorbar
+ylabel(hc,'Ambient [nM]')
+colormap('jet')
+subplot(2,1,2)
+z = PopulationSolution.S_star(:,:,1);
+z(find(~z)) = NaN;
+imagesc(x,y,1e6*z)
+xlabel('Latitude')
+ylabel('Depth')
+set(gca,'FontSize',20)
+hc = colorbar
+ylabel(hc,'S^* [nM]')
+colormap('jet')
+
+
+
+
+% histograms of S-star and ambient concentrations for ammonia
+s = PopulationSolution.S_star(:,:,1);
+s = s(:);
+s(find(~s)) = NaN;
+s = 1e6.*s; %nM
+
+c = CruiseData.Ammonia(Gridding.stationsVec2,:)'; %nM
+
+binRange = [0:5:100];
+
+hcs = histcounts(s,[binRange Inf]);
+hcc = histcounts(c,[binRange Inf]);
+
+figure
+hb = bar(binRange,[hcc;hcs]',0.8)
+xlabel('Ammonia [nM]')
+set(gca,'FontSize',20)
+legend('Ambient','S^*')
+
+
+%% Diffusion limitation
+
+figure
+subplot(2,2,1) % ammonia
+z = CruiseData.Ammonia(Gridding.stationsVec2,:)' - (1e6*PopulationSolution.S_star(:,:,1));
+diffLim_idx = find(z<0);
+z2 = zeros(size(z,1),size(z,2));
+z2(diffLim_idx) = 1;
+imagesc(x,y,z2)
+xlabel('Latitude')
+ylabel('Depth')
+title('Ammonia')
+set(gca,'FontSize',20)
+colormap('jet')
+
+subplot(2,2,2) % Nitrite
+z = CruiseData.Nitrite(Gridding.stationsVec2,:)' - (1e6*PopulationSolution.S_star(:,:,4));
+diffLim_idx = find(z<0);
+z2 = zeros(size(z,1),size(z,2));
+z2(diffLim_idx) = 1;
+imagesc(x,y,z2)
+xlabel('Latitude')
+ylabel('Depth')
+title('Nitrite')
+set(gca,'FontSize',20)
+colormap('jet')
+
+subplot(2,2,3) % Nitrate
+z = CruiseData.Nitrate(Gridding.stationsVec2,:)' - (1e6*PopulationSolution.S_star(:,:,3));
+diffLim_idx = find(z<0);
+z2 = zeros(size(z,1),size(z,2));
+z2(diffLim_idx) = 1;
+imagesc(x,y,z2)
+xlabel('Latitude')
+ylabel('Depth')
+title('Nitrate')
+set(gca,'FontSize',20)
+colormap('jet')
+
+subplot(2,2,4) % Orthophosphate
+z = CruiseData.Orthophosphate(Gridding.stationsVec2,:)' - (1e6*PopulationSolution.S_star(:,:,2));
+diffLim_idx = find(z<0);
+z2 = zeros(size(z,1),size(z,2));
+z2(diffLim_idx) = 1;
+imagesc(x,y,z2)
+xlabel('Latitude')
+ylabel('Depth')
+title('Phosphate')
+set(gca,'FontSize',20)
+colormap('jet')
+
+%% Plot n opt and n for one strain
+TpDat = readtable(FullSolution.FileNames.TpDat_fileName,'ReadVariableNames',true,'Delimiter',',');
+S_vec = logspace(-6,-1,100);
+f_max = 0.085; % Maximum fraction of the cell surface that can be covered by transporters... wonkiest term in here. See text for a discussion of n_max.
+
+% Nitrate
+D = getDiffusivity(TpDat.TpMets_MW(3),25);
+kcat = TpDat.kcat(3);
+r = 0.35e-6;
+A = TpDat.A(3);
+mtc = D./r;
+% capture probability
+alpha = ( (mtc).*sqrt(pi()*A) ) ./ (4*D); % dimensionless
+ks_p = ( (pi() .* kcat) ./ (4*alpha .* A .* D) ) .* sqrt(A./pi()); % moles m-3
+nG = 49;
+n_star_D = 4*pi()*r*D.*S_vec ./ kcat;
+n_star_G = ( ks_p + S_vec ) ./ ( (S_vec ./ nG) - (kcat./(D.*r)) )
+
+% get min set
+n_max = f_max.*(4.*pi().*(r.^2))./A; % cell-1
+n_max2 = repmat(n_max,1,numel(S_vec));
+n_star_G(find(n_star_G<0)) = NaN;
+n_star_Nitrate = nanmin([n_star_G;n_star_D;n_max2]);
+
+
+% Nitrite
+D = getDiffusivity(TpDat.TpMets_MW(4),25);
+kcat = TpDat.kcat(4);
+r = 0.35e-6;
+A = TpDat.A(4);
+mtc = D./r;
+% capture probability
+alpha = ( (mtc).*sqrt(pi()*A) ) ./ (4*D); % dimensionless
+ks_p = ( (pi() .* kcat) ./ (4*alpha .* A .* D) ) .* sqrt(A./pi()); % moles m-3
+nG = 49;
+n_star_D = 4*pi()*r*D.*S_vec ./ kcat;
+n_star_G = ( ks_p + S_vec ) ./ ( (S_vec ./ nG) - (kcat./(D.*r)) )
+
+% get min set
+n_max = f_max.*(4.*pi().*(r.^2))./A; % cell-1
+n_max2 = repmat(n_max,1,numel(S_vec));
+n_star_G(find(n_star_G<0)) = NaN;
+n_star_Nitrite = nanmin([n_star_G;n_star_D;n_max2]);
+
+% Ammonia
+D = getDiffusivity(TpDat.TpMets_MW(1),25);
+kcat = TpDat.kcat(1);
+r = 0.35e-6;
+A = TpDat.A(1);
+mtc = D./r;
+% capture probability
+alpha = ( (mtc).*sqrt(pi()*A) ) ./ (4*D); % dimensionless
+ks_p = ( (pi() .* kcat) ./ (4*alpha .* A .* D) ) .* sqrt(A./pi()); % moles m-3
+nG = 80;
+n_star_D = 4*pi()*r*D.*S_vec ./ kcat;
+n_star_G = ( ks_p + S_vec ) ./ ( (S_vec ./ nG) - (kcat./(D.*r)) )
+
+% get min set
+n_max = f_max.*(4.*pi().*(r.^2))./A; % cell-1
+n_max2 = repmat(n_max,1,numel(S_vec));
+n_star_G(find(n_star_G<0)) = NaN;
+n_star_Ammonia = nanmin([n_star_G;n_star_D;n_max2]);
+
+% Orthophosphate
+D = getDiffusivity(TpDat.TpMets_MW(2),25);
+kcat = TpDat.kcat(2);
+r = 0.35e-6;
+A = TpDat.A(2);
+mtc = D./r;
+% capture probability
+alpha = ( (mtc).*sqrt(pi()*A) ) ./ (4*D); % dimensionless
+ks_p = ( (pi() .* kcat) ./ (4*alpha .* A .* D) ) .* sqrt(A./pi()); % moles m-3
+nG = 55;
+n_star_D = 4*pi()*r*D.*S_vec ./ kcat;
+n_star_G = ( ks_p + S_vec ) ./ ( (S_vec ./ nG) - (kcat./(D.*r)) )
+
+% get min set
+n_max = f_max.*(4.*pi().*(r.^2))./A; % cell-1
+n_max2 = repmat(n_max,1,numel(S_vec));
+n_star_G(find(n_star_G<0)) = NaN;
+n_star_Orthophosphate = nanmin([n_star_G;n_star_D;n_max2]);
+
+
+
+
+strName = 'MIT9312'
+strIdx = find(strcmp(strName,Gridding.strNameVec));
+S_vec2 = logspace(0,5,100); %nM
+
+fig = figure
+h1 = plot(S_vec2,n_star_Ammonia,'-g','LineWidth',3);
+hold on
+h2 = plot(S_vec2,n_star_Nitrite,'-k','LineWidth',3);
+h3 = plot(S_vec2,n_star_Nitrate,'-r','LineWidth',3);
+h4 = plot(S_vec2,n_star_Orthophosphate,'-b','LineWidth',3);
+plot(CruiseData.Ammonia(Gridding.stationsVec2,:)',StrainSolution.TpOpt(:,:,2,strIdx),'.g','MarkerSize',20);
+plot(CruiseData.Nitrite(Gridding.stationsVec2,:)',StrainSolution.TpOpt(:,:,5,strIdx),'.k','MarkerSize',20);
+plot(CruiseData.Nitrate(Gridding.stationsVec2,:)',StrainSolution.TpOpt(:,:,4,strIdx),'.r','MarkerSize',20);
+plot(CruiseData.Orthophosphate(Gridding.stationsVec2,:)',StrainSolution.TpOpt(:,:,3,strIdx),'.b','MarkerSize',20);
+set(gca,'XScale','log')
+xlim([0 100000])
+xlabel('Nutrient concentration [nM]')
+ylabel('Transporters per cell')
+legend([h1(1) h2(1) h3(1) h4(1)],'Ammonia','Nitrite','Nitrate','Phosphate','Location','NorthEast')
+set(gca,'FontSize',20)
+
+% contour of vmax
+figure
+z = 1e15 .* 3600 .* (PopulationSolution.TpOpt(:,:,4) ./ CruiseData.Pro(Gridding.stationsVec2,:)') .* TpDat.kcat(4);
+imagesc(x,y,z)
+xlabel('Latitude')
+ylabel('Depth')
+set(gca,'FontSize',20)
+colormap('jet')
+hc = colorbar
+ylabel(hc,'v_m_a_x [fmol cell^-^1 h^-^1]')
+set(gca,'clim',[0 0.25])
+
+
+% just ammonia n
+
+D = getDiffusivity(TpDat.TpMets_MW(1),25);
+kcat = TpDat.kcat(1);
+r = 0.35e-6;
+A = TpDat.A(1);
+mtc = D./r;
+% capture probability
+alpha = ( (mtc).*sqrt(pi()*A) ) ./ (4*D); % dimensionless
+ks_p = ( (pi() .* kcat) ./ (4*alpha .* A .* D) ) .* sqrt(A./pi()); % moles m-3
+nG = 80;
+n_star_D = 4*pi()*r*D.*S_vec ./ kcat;
+n_star_G = ( ks_p + S_vec ) ./ ( (S_vec ./ nG) - (kcat./(D.*r)) )
+
+% get min set
+n_max = f_max.*(4.*pi().*(r.^2))./A; % cell-1
+n_max2 = repmat(n_max,1,numel(S_vec));
+n_star_G(find(n_star_G<0)) = NaN;
+n_star_Ammonia = nanmin([n_star_G;n_star_D;n_max2]);
+
+% histograms of S-star and ambient concentrations for ammonia
+
+fig = figure % MIT9312
+strName = 'MIT9312'
+strIdx = find(strcmp(strName,Gridding.strNameVec));
+
+subplot(2,1,1)
+s = StrainSolution.S_star(:,:,1,strIdx);
+s = s(:);
+%s(find(~s)) = NaN;
+s = 1e6.*s; %nM
+c = CruiseData.Ammonia(Gridding.stationsVec2,:)'; %nM
+binRange = [0:5:100];
+hcs = histcounts(s,[binRange Inf]);
+hcc = histcounts(c,[binRange Inf]);
+
+hb = bar(binRange,[hcc;hcs]',0.8)
+xlabel('Ammonium [nM]')
+set(gca,'FontSize',20)
+legend('Ambient','S^*')
+subplot(2,1,2)
+h1 = plot(S_vec2,n_star_Ammonia,'-k','LineWidth',3);
+hold on
+plot(CruiseData.Ammonia(Gridding.stationsVec2,:)',StrainSolution.TpOpt(:,:,2,strIdx),'.k','MarkerSize',20);
+xlim([0 100])
+xlabel('Ammonium [nM]')
+ylabel('Transporters per cell')
+set(gca,'FontSize',20)
+%legend([h1(1) h2(1) h3(1)],'Ammonium','Nitrite','Nitrate')
+
+
+fig = figure % NATL1A
+strName = 'NATL1A'
+strIdx = find(strcmp(strName,Gridding.strNameVec));
+
+subplot(2,1,1)
+s = StrainSolution.S_star(:,:,1,strIdx);
+s = s(:);
+%s(find(~s)) = NaN;
+s = 1e6.*s; %nM
+c = CruiseData.Ammonia(Gridding.stationsVec2,:)'; %nM
+binRange = [0:5:100];
+hcs = histcounts(s,[binRange Inf]);
+hcc = histcounts(c,[binRange Inf]);
+
+hb = bar(binRange,[hcc;hcs]',0.8)
+xlabel('Ammonium [nM]')
+set(gca,'FontSize',20)
+legend('Ambient','S^*')
+subplot(2,1,2)
+h1 = plot(S_vec2,n_star_Ammonia,'-k','LineWidth',3);
+hold on
+h2 = plot(S_vec2,n_star_Nitrite,'-r','LineWidth',3);
+plot(CruiseData.Ammonia(Gridding.stationsVec2,:)',StrainSolution.TpOpt(:,:,2,strIdx),'.k','MarkerSize',20);
+plot(CruiseData.Nitrite(Gridding.stationsVec2,:)',StrainSolution.TpOpt(:,:,5,strIdx),'.r','MarkerSize',20);
+%strName = 'SB'
+%strIdx = find(strcmp(strName,Gridding.strNameVec));
+%plot(CruiseData.Ammonia(Gridding.stationsVec2,:)',StrainSolution.TpOpt(:,:,2,strIdx),'.g','MarkerSize',20);
+%set(gca,'XScale','log')
+xlim([0 100])
+xlabel('Nutrient concentration [nM]')
+ylabel('Transporters per cell')
+set(gca,'FontSize',20)
+legend([h1(1) h2(1) ],'Ammonium','Nitrite')
+
 %% Loop through each strain, each station, each depth, and each exomet
 % load strMod
 load(FullSolution.FileNames.StrMod_Path);
@@ -287,6 +589,69 @@ set(hl,'EdgeColor','w')
 set(gca,'FontSize',20)
 
 
+%% SA limitation
+% all strains
+for a = 1:Gridding.nStr
+    SA = 4 .* pi() .* (1e-6.*StrainSolution.r_opt(:,:,a)).^2;
+    for b = 1:4
+        nTp = StrainSolution.TpOpt(:,:,b+1,a);
+        SA_Tp(:,:,b) = nTp .* TpDat.A(b);
+    end
+    SA_Tp_total = nansum(SA_Tp,3);
+    pct_available_SA(:,:,a) = SA_Tp_total ./ (0.085.*SA);
+end
+
+% ecotypes
+for a = 1:numel(ecotypeList)
+    SA = 4 .* pi() .* (1e-6.*EcotypeSolution.(ecotypeList{a}).r_opt).^2;
+    for b = 1:4
+        nTp = EcotypeSolution.(ecotypeList{a}).TpOpt(:,:,b+1);
+        SA_Tp(:,:,b) = nTp .* TpDat.A(b);
+    end
+    SA_Tp_total = nansum(SA_Tp,3);
+    pct_available_SA_eco(:,:,a) = SA_Tp_total ./ (0.085.*SA);
+end
+
+figure
+str = 'MIT9312';
+str_idx = find(strcmp(str,Gridding.strNameVec));
+
+imagesc(x,y,pct_available_SA(:,:,str_idx) - 0.25)
+hc = colorbar
+ylabel(hc,'Fraction of available surface occupied')
+colormap('jet')
+set(gca,'clim',[0 1])
+xlabel('Latitude')
+ylabel('Depth')
+set(gca,'FontSize',20)
 
 
+figure
+imagesc(x,y,pct_available_SA_eco(:,:,1) - 0.25)
+hc = colorbar
+ylabel(hc,'Fraction of available surface occupied')
+colormap('jet')
+set(gca,'clim',[0 1])
+xlabel('Latitude')
+ylabel('Depth')
+set(gca,'FontSize',20)
+
+% population
+SA = 4 .* pi() .* (1e-6.*PopulationSolution.r_opt).^2;
+for b = 1:4
+    nTp = PopulationSolution.TpOpt(:,:,b+1) ./ CruiseData.Pro(Gridding.stationsVec2,:)';
+    SA_Tp(:,:,b) = nTp .* TpDat.A(b);
+end
+SA_Tp_total = nansum(SA_Tp,3);
+pct_available_SA_pop = SA_Tp_total ./ (0.085.*SA);
+
+figure
+imagesc(x,y,pct_available_SA_pop)
+hc = colorbar
+ylabel(hc,'Fraction of available surface occupied')
+colormap('jet')
+set(gca,'clim',[0 1])
+xlabel('Latitude')
+ylabel('Depth')
+set(gca,'FontSize',20)
 

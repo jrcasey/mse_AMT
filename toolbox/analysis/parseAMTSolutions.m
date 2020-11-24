@@ -11,69 +11,71 @@ orgDatabase = readtable('GitHub/mse_AMT/data/db/orgDatabase.csv','Delimiter',','
 ecotypeList = [{'HLI'},{'HLII'},{'LLI'},{'LLII_LLIII'},{'LLIV'}];
 ecotypeList2 = [{'HLI'},{'HLII'},{'LLI'},{'LLII/LLIII'},{'LLIV'}];
 
-for i = 1:Gridding.nStr
-    strainInd = find(strcmp(Gridding.strNameVec{i},orgDatabase.StrainName));
-    ecotype{i} = orgDatabase.Ecotype{strainInd};
-    ecotypeInd(i) = find(strcmp(ecotype{i},ecotypeList));
+for a = 1:Gridding.nStr
+    strainInd = find(strcmp(Gridding.strNameVec{a},orgDatabase.StrainName));
+    ecotype{a} = orgDatabase.Ecotype{strainInd};
+    ecotypeInd(a) = find(strcmp(ecotype{a},ecotypeList));
 end
 
-for i = 1:numel(ecotypeList)
-    strEco_idx{i} = find(ecotypeInd == i);
+for a = 1:numel(ecotypeList)
+    strEco_idx{a} = find(ecotypeInd == a);
 end
 ecotypeList2 = [{'HLI'},{'HLII'},{'LLI'},{'LLII/LLIII'},{'LLIV'}];
 
 
-%% All strains in each ecotype
+%% All strains
 StrainSolution = struct;
-for i = 1:Gridding.nStr
-    StrainSolution.Growth(:,:,i) = FullSolution.(Gridding.strNameVec{i}).Growth;
-    StrainSolution.Fluxes(:,:,:,i) = FullSolution.(Gridding.strNameVec{i}).Fluxes;
-    StrainSolution.Shadow(:,:,:,i) = FullSolution.(Gridding.strNameVec{i}).Shadow;
-    StrainSolution.BOF_coefs(:,:,:,i) = FullSolution.(Gridding.strNameVec{i}).BOF_coefs;
-    StrainSolution.TpOpt(:,:,:,i) = FullSolution.(Gridding.strNameVec{i}).TpOpt;
-    StrainSolution.r_opt(:,:,i) = FullSolution.(Gridding.strNameVec{i}).r_opt;
-    StrainSolution.pigAbs(:,:,:,i) = FullSolution.(Gridding.strNameVec{i}).pigAbs;
-    StrainSolution.uptakeBounds(:,:,:,i) = FullSolution.(Gridding.strNameVec{i}).uptakeBounds;
-    StrainSolution.StrMod1_growth(:,:,i) = FullSolution.(Gridding.strNameVec{i}).StrMod1_growth;
-    StrainSolution.StrMod2_growth(:,:,i) = FullSolution.(Gridding.strNameVec{i}).StrMod2_growth;
-    StrainSolution.StrMod3_growth(:,:,i) = FullSolution.(Gridding.strNameVec{i}).StrMod3_growth;
-    StrainSolution.StrMod4_growth(:,:,i) = FullSolution.(Gridding.strNameVec{i}).StrMod4_growth;
-    StrainSolution.StrMod5_growth(:,:,i) = FullSolution.(Gridding.strNameVec{i}).StrMod5_growth;
+for a = 1:Gridding.nStr
+    StrainSolution.Growth(:,:,a) = FullSolution.(Gridding.strNameVec{a}).Growth;
+    StrainSolution.Fluxes(:,:,:,a) = FullSolution.(Gridding.strNameVec{a}).Fluxes;
+    StrainSolution.Shadow(:,:,:,a) = FullSolution.(Gridding.strNameVec{a}).Shadow;
+    StrainSolution.BOF_coefs(:,:,:,a) = FullSolution.(Gridding.strNameVec{a}).BOF_coefs;
+    StrainSolution.TpOpt(:,:,:,a) = FullSolution.(Gridding.strNameVec{a}).TpOpt;
+    StrainSolution.r_opt(:,:,a) = FullSolution.(Gridding.strNameVec{a}).r_opt;
+    StrainSolution.pigAbs(:,:,:,a) = FullSolution.(Gridding.strNameVec{a}).pigAbs;
+    StrainSolution.S_star(:,:,:,a) = FullSolution.(Gridding.strNameVec{a}).S_star;
+    StrainSolution.uptakeBounds(:,:,:,a) = FullSolution.(Gridding.strNameVec{a}).uptakeBounds;
+    StrainSolution.StrMod1_growth(:,:,a) = FullSolution.(Gridding.strNameVec{a}).StrMod1_growth;
+    StrainSolution.StrMod2_growth(:,:,a) = FullSolution.(Gridding.strNameVec{a}).StrMod2_growth;
+    StrainSolution.StrMod3_growth(:,:,a) = FullSolution.(Gridding.strNameVec{a}).StrMod3_growth;
+    StrainSolution.StrMod4_growth(:,:,a) = FullSolution.(Gridding.strNameVec{a}).StrMod4_growth;
+    StrainSolution.StrMod5_growth(:,:,a) = FullSolution.(Gridding.strNameVec{a}).StrMod5_growth;
 end
 
 %% Winning strain from each ecotype
 % Find index of winning strain
-for i = 1:Gridding.nZ
-    for j = 1:Gridding.nStations
+for a = 1:Gridding.nZ
+    for b = 1:Gridding.nStations
         for k = 1:numel(ecotypeList2)
-            [junk, growthMaxStrain_idx{k}(i,j)] = nanmax(StrainSolution.Growth(i,j,find(ecotypeInd==k)),[],3);
+            [junk, growthMaxStrain_idx{k}(a,b)] = nanmax(StrainSolution.Growth(a,b,find(ecotypeInd==k)),[],3);
         end
     end
 end
 
 
-for i = 1:numel(ecotypeList2)
-    growthMaxStrainEco_idx{i} = strEco_idx{i}(growthMaxStrain_idx{i});
+for a = 1:numel(ecotypeList2)
+    growthMaxStrainEco_idx{a} = strEco_idx{a}(growthMaxStrain_idx{a});
 end
 
 
 EcotypeSolution = struct;
-for i = 1:Gridding.nZ
-    for j = 1:Gridding.nStations
+for a = 1:Gridding.nZ
+    for b = 1:Gridding.nStations
         for k = 1:numel(ecotypeList2)
-            EcotypeSolution.(ecotypeList{k}).Growth(i,j) = StrainSolution.Growth(i,j,growthMaxStrainEco_idx{k}(i,j));
-            EcotypeSolution.(ecotypeList{k}).Fluxes(i,j,:) = StrainSolution.Fluxes(i,j,:,growthMaxStrainEco_idx{k}(i,j));
-            EcotypeSolution.(ecotypeList{k}).Shadow(i,j,:) = StrainSolution.Shadow(i,j,:,growthMaxStrainEco_idx{k}(i,j));
-            EcotypeSolution.(ecotypeList{k}).BOF_coefs(i,j,:) = StrainSolution.BOF_coefs(i,j,:,growthMaxStrainEco_idx{k}(i,j));
-            EcotypeSolution.(ecotypeList{k}).TpOpt(i,j,:) = StrainSolution.TpOpt(i,j,:,growthMaxStrainEco_idx{k}(i,j));
-            EcotypeSolution.(ecotypeList{k}).r_opt(i,j) = StrainSolution.r_opt(i,j,growthMaxStrainEco_idx{k}(i,j));
-            EcotypeSolution.(ecotypeList{k}).pigAbs(i,j,:) = StrainSolution.pigAbs(i,j,:,growthMaxStrainEco_idx{k}(i,j));
-            EcotypeSolution.(ecotypeList{k}).uptakeBounds(i,j,:) = StrainSolution.uptakeBounds(i,j,:,growthMaxStrainEco_idx{k}(i,j));
-            EcotypeSolution.(ecotypeList{k}).StrMod1_growth(i,j) = StrainSolution.StrMod1_growth(i,j,growthMaxStrainEco_idx{k}(i,j));
-            EcotypeSolution.(ecotypeList{k}).StrMod2_growth(i,j) = StrainSolution.StrMod2_growth(i,j,growthMaxStrainEco_idx{k}(i,j));
-            EcotypeSolution.(ecotypeList{k}).StrMod3_growth(i,j) = StrainSolution.StrMod3_growth(i,j,growthMaxStrainEco_idx{k}(i,j));
-            EcotypeSolution.(ecotypeList{k}).StrMod4_growth(i,j) = StrainSolution.StrMod4_growth(i,j,growthMaxStrainEco_idx{k}(i,j));
-            EcotypeSolution.(ecotypeList{k}).StrMod5_growth(i,j) = StrainSolution.StrMod5_growth(i,j,growthMaxStrainEco_idx{k}(i,j));
+            EcotypeSolution.(ecotypeList{k}).Growth(a,b) = StrainSolution.Growth(a,b,growthMaxStrainEco_idx{k}(a,b));
+            EcotypeSolution.(ecotypeList{k}).Fluxes(a,b,:) = StrainSolution.Fluxes(a,b,:,growthMaxStrainEco_idx{k}(a,b));
+            EcotypeSolution.(ecotypeList{k}).Shadow(a,b,:) = StrainSolution.Shadow(a,b,:,growthMaxStrainEco_idx{k}(a,b));
+            EcotypeSolution.(ecotypeList{k}).BOF_coefs(a,b,:) = StrainSolution.BOF_coefs(a,b,:,growthMaxStrainEco_idx{k}(a,b));
+            EcotypeSolution.(ecotypeList{k}).TpOpt(a,b,:) = StrainSolution.TpOpt(a,b,:,growthMaxStrainEco_idx{k}(a,b));
+            EcotypeSolution.(ecotypeList{k}).r_opt(a,b) = StrainSolution.r_opt(a,b,growthMaxStrainEco_idx{k}(a,b));
+            EcotypeSolution.(ecotypeList{k}).pigAbs(a,b,:) = StrainSolution.pigAbs(a,b,:,growthMaxStrainEco_idx{k}(a,b));
+            EcotypeSolution.(ecotypeList{k}).S_star(a,b,:) = StrainSolution.S_star(a,b,:,growthMaxStrainEco_idx{k}(a,b));
+            EcotypeSolution.(ecotypeList{k}).uptakeBounds(a,b,:) = StrainSolution.uptakeBounds(a,b,:,growthMaxStrainEco_idx{k}(a,b));
+            EcotypeSolution.(ecotypeList{k}).StrMod1_growth(a,b) = StrainSolution.StrMod1_growth(a,b,growthMaxStrainEco_idx{k}(a,b));
+            EcotypeSolution.(ecotypeList{k}).StrMod2_growth(a,b) = StrainSolution.StrMod2_growth(a,b,growthMaxStrainEco_idx{k}(a,b));
+            EcotypeSolution.(ecotypeList{k}).StrMod3_growth(a,b) = StrainSolution.StrMod3_growth(a,b,growthMaxStrainEco_idx{k}(a,b));
+            EcotypeSolution.(ecotypeList{k}).StrMod4_growth(a,b) = StrainSolution.StrMod4_growth(a,b,growthMaxStrainEco_idx{k}(a,b));
+            EcotypeSolution.(ecotypeList{k}).StrMod5_growth(a,b) = StrainSolution.StrMod5_growth(a,b,growthMaxStrainEco_idx{k}(a,b));
         end
     end
 end
@@ -87,6 +89,7 @@ PopulationSolution.BOF_coefs = zeros(Gridding.nZ,Gridding.nStations,size(StrainS
 PopulationSolution.TpOpt = zeros(Gridding.nZ,Gridding.nStations,size(StrainSolution.TpOpt,3));
 PopulationSolution.r_opt = zeros(Gridding.nZ,Gridding.nStations);
 PopulationSolution.pigAbs = zeros(Gridding.nZ,Gridding.nStations,size(StrainSolution.pigAbs,3));
+PopulationSolution.S_star = zeros(Gridding.nZ,Gridding.nStations,size(StrainSolution.S_star,3));
 PopulationSolution.uptakeBounds = zeros(Gridding.nZ,Gridding.nStations,size(StrainSolution.uptakeBounds,3));
 PopulationSolution.StrMod1_growth = zeros(Gridding.nZ,Gridding.nStations);
 PopulationSolution.StrMod2_growth = zeros(Gridding.nZ,Gridding.nStations);
@@ -97,36 +100,39 @@ PopulationSolution.StrMod5_growth = zeros(Gridding.nZ,Gridding.nStations);
 
 
 
-massConversion = (4/3) .* pi() .* 280e-15; % g cell-1
-% calculate relative abudance of each ecotype for weighted averages
-CruiseData = CruiseData;
-relAb = zeros(Gridding.nZ,Gridding.nStations,numel(ecotypeList));
-for i = 1:numel(ecotypeList)
-    relAb(:,:,i) = CruiseData.(ecotypeList{i})(Gridding.stationsVec2,:)';
+massConversion = (4/3) .* pi() .* 280e-15 .* 2; % g cell-1
+% calculate relative abudance of each ecotype. When doing the weighting,
+% there's an issue with nan's, so let's zero out the relative abundance of
+% nan growth instances
+
+ecoAb = zeros(Gridding.nZ,Gridding.nStations,numel(ecotypeList));
+for a = 1:numel(ecotypeList)
+    ecoAb(:,:,a) = CruiseData.(ecotypeList{a})(Gridding.stationsVec2,:)'; % cells ml-1
+    %[nanRowIdx, nanColIdx] = find(isnan(EcotypeSolution.(ecotypeList{i}).Growth)); % find row and column indices of nan's in the ecotype solutions
+    %ecoAb(nanRowIdx,nanColIdx,i) = 0; % assign nan growth indices to be zero abundance
 end
-totalAb = nansum(relAb,3);
-for i = 1:numel(ecotypeList)
-    relAb2(:,:,i) = relAb(:,:,i) ./ totalAb;
+totalAb = nansum(ecoAb,3); % cells ml-1
+for a = 1:numel(ecotypeList)
+    relAb(:,:,a) = ecoAb(:,:,a) ./ totalAb; % relative abundance
 end
 
-
-
-for i = 1:numel(ecotypeList) 
-    tempPopGrowth(:,:,i) = EcotypeSolution.(ecotypeList{i}).Growth  .* relAb2(:,:,i);
-    tempPopropt(:,:,i) = EcotypeSolution.(ecotypeList{i}).r_opt .* relAb2(:,:,i);
-    tempPopFluxes(:,:,:,i) = repmat(CruiseData.(ecotypeList{i})(Gridding.stationsVec2,:)',1,1,numel(PanGEM.rxns)) .* EcotypeSolution.(ecotypeList{i}).Fluxes .* repmat(massConversion .* EcotypeSolution.(ecotypeList{i}).r_opt.^3,1,1,numel(PanGEM.rxns));
-    tempPopShadow(:,:,:,i) = EcotypeSolution.(ecotypeList{i}).Shadow;
-    tempPopBOF(:,:,:,i) = repmat(CruiseData.(ecotypeList{i})(Gridding.stationsVec2,:)',1,1,size(StrainSolution.BOF_coefs,3)) .* EcotypeSolution.(ecotypeList{i}).BOF_coefs .* repmat(massConversion .* EcotypeSolution.(ecotypeList{i}).r_opt.^3,1,1,size(StrainSolution.BOF_coefs,3));
+% Caluclate weighted averages or absolute totals for all fields
+for a = 1:numel(ecotypeList) 
+    tempPopGrowth(:,:,a) = EcotypeSolution.(ecotypeList{a}).Growth  .* relAb(:,:,a);
+    tempPopropt(:,:,a) = EcotypeSolution.(ecotypeList{a}).r_opt .* relAb(:,:,a);
+    tempPopFluxes(:,:,:,a) = repmat(CruiseData.(ecotypeList{a})(Gridding.stationsVec2,:)',1,1,numel(PanGEM.rxns)) .* EcotypeSolution.(ecotypeList{a}).Fluxes .* repmat(massConversion .* EcotypeSolution.(ecotypeList{a}).r_opt.^3,1,1,numel(PanGEM.rxns));
+    tempPopShadow(:,:,:,a) = EcotypeSolution.(ecotypeList{a}).Shadow;
+    tempPopBOF(:,:,:,a) = repmat(CruiseData.(ecotypeList{a})(Gridding.stationsVec2,:)',1,1,size(StrainSolution.BOF_coefs,3)) .* EcotypeSolution.(ecotypeList{a}).BOF_coefs .* repmat(massConversion .* EcotypeSolution.(ecotypeList{a}).r_opt.^3,1,1,size(StrainSolution.BOF_coefs,3));
     %tempPopTpOpt(:,:,:,i) = repmat(CruiseData.(ecotypeList{i})(Gridding.stationsVec2,:)',1,1,size(tempTpOpt,3)) .* EcotypeSolution.(ecotypeList{i}).TpOpt .* repmat((4.*pi()) ./ (1e-6.*EcotypeSolution.(ecotypeList{i}).r_opt).^2,1,1,size(tempTpOpt,3));
-    tempPopTpOpt(:,:,:,i) = repmat(CruiseData.(ecotypeList{i})(Gridding.stationsVec2,:)',1,1,size(StrainSolution.TpOpt,3)) .* EcotypeSolution.(ecotypeList{i}).TpOpt;
-    tempPoppigAbs(:,:,:,i) = repmat(CruiseData.(ecotypeList{i})(Gridding.stationsVec2,:)',1,1,size(StrainSolution.pigAbs,3)) .* EcotypeSolution.(ecotypeList{i}).pigAbs .* repmat(massConversion .* EcotypeSolution.(ecotypeList{i}).r_opt.^3,1,1,size(StrainSolution.pigAbs,3));
-    tempPopuptakeBounds(:,:,:,i) = repmat(CruiseData.(ecotypeList{i})(Gridding.stationsVec2,:)',1,1,size(StrainSolution.uptakeBounds,3)) .* EcotypeSolution.(ecotypeList{i}).uptakeBounds .* repmat(massConversion .* EcotypeSolution.(ecotypeList{i}).r_opt.^3,1,1,size(StrainSolution.uptakeBounds,3));
-    tempPopStrMod1_growth(:,:,i) = EcotypeSolution.(ecotypeList{i}).StrMod1_growth  .* relAb2(:,:,i);
-    tempPopStrMod2_growth(:,:,i) = EcotypeSolution.(ecotypeList{i}).StrMod2_growth  .* relAb2(:,:,i);
-    tempPopStrMod3_growth(:,:,i) = EcotypeSolution.(ecotypeList{i}).StrMod3_growth  .* relAb2(:,:,i);
-    tempPopStrMod4_growth(:,:,i) = EcotypeSolution.(ecotypeList{i}).StrMod4_growth  .* relAb2(:,:,i);
-    tempPopStrMod5_growth(:,:,i) = EcotypeSolution.(ecotypeList{i}).StrMod5_growth  .* relAb2(:,:,i);
-    
+    tempPopTpOpt(:,:,:,a) = repmat(CruiseData.(ecotypeList{a})(Gridding.stationsVec2,:)',1,1,size(StrainSolution.TpOpt,3)) .* EcotypeSolution.(ecotypeList{a}).TpOpt;
+    tempPoppigAbs(:,:,:,a) = repmat(CruiseData.(ecotypeList{a})(Gridding.stationsVec2,:)',1,1,size(StrainSolution.pigAbs,3)) .* EcotypeSolution.(ecotypeList{a}).pigAbs .* repmat(massConversion .* EcotypeSolution.(ecotypeList{a}).r_opt.^3,1,1,size(StrainSolution.pigAbs,3));
+    tempPopS_star(:,:,:,a) = EcotypeSolution.(ecotypeList{a}).S_star .* relAb(:,:,a);
+    tempPopuptakeBounds(:,:,:,a) = repmat(CruiseData.(ecotypeList{a})(Gridding.stationsVec2,:)',1,1,size(StrainSolution.uptakeBounds,3)) .* EcotypeSolution.(ecotypeList{a}).uptakeBounds .* repmat(massConversion .* EcotypeSolution.(ecotypeList{a}).r_opt.^3,1,1,size(StrainSolution.uptakeBounds,3));
+    tempPopStrMod1_growth(:,:,a) = EcotypeSolution.(ecotypeList{a}).StrMod1_growth  .* relAb(:,:,a);
+    tempPopStrMod2_growth(:,:,a) = EcotypeSolution.(ecotypeList{a}).StrMod2_growth  .* relAb(:,:,a);
+    tempPopStrMod3_growth(:,:,a) = EcotypeSolution.(ecotypeList{a}).StrMod3_growth  .* relAb(:,:,a);
+    tempPopStrMod4_growth(:,:,a) = EcotypeSolution.(ecotypeList{a}).StrMod4_growth  .* relAb(:,:,a);
+    tempPopStrMod5_growth(:,:,a) = EcotypeSolution.(ecotypeList{a}).StrMod5_growth  .* relAb(:,:,a);
 end
 
 
@@ -137,6 +143,7 @@ PopulationSolution.r_opt = nansum(tempPopropt,3);
 PopulationSolution.BOF_coefs = nansum(tempPopBOF,4); % g ml-1
 PopulationSolution.TpOpt = nansum(tempPopTpOpt,4); % Tp ml-1
 PopulationSolution.pigAbs = nansum(tempPoppigAbs,4); % mmol ml-1 h-1
+PopulationSolution.S_star = nansum(tempPopS_star,4); % mol m-3
 PopulationSolution.uptakeBounds = nansum(tempPopuptakeBounds,4); % mmol ml-1 h-1
 PopulationSolution.StrMod1_growth = nansum(tempPopStrMod1_growth,3); % h-1 (weighted average)
 PopulationSolution.StrMod2_growth = nansum(tempPopStrMod2_growth,3); % h-1 (weighted average)
