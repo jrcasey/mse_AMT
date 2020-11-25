@@ -79,15 +79,15 @@ idxMat = zeros(Gridding.nStations,Gridding.nZ,Gridding.nStr);
 nIterations = size(idxMat,1).*size(idxMat,2).*size(idxMat,3);
 
 % get job array index
-job_array_idx = str2num(getenv('SLURM_ARRAY_TASK_ID')) + 29440;
+%job_array_idx = str2num(getenv('SLURM_ARRAY_TASK_ID')) + 29440;
 
 % After running compile_AMT_subjobs.m, sometimes there are missing entries.
 % Save those missing entry indices in a file called missingFileNo.mat and
 % run those locally or back on the server from here: (comment out
 % otherwise)
-%  job_array_idx_temp = str2num(getenv('SLURM_ARRAY_TASK_ID'));
-%  load('data/output/missingFileNo.mat');
-%  job_array_idx = missingFileNo(job_array_idx_temp);
+ job_array_idx_temp = str2num(getenv('SLURM_ARRAY_TASK_ID'));
+ load('data/output/missingFileNo.mat');
+ job_array_idx = missingFileNo(job_array_idx_temp);
 
 % locate coordinates
 [i,j,k] = ind2sub(size(idxMat),job_array_idx);
