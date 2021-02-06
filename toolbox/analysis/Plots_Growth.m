@@ -350,29 +350,55 @@ end
 
 
 %% Growth with abundance contours
-
+% ecotypes
 fig = figure
 
 for a = 1:numel(ecotypeList)
     
-z1 = EcotypeSolution.(ecotypeList{a}).Growth;
-z2 = CruiseData.(ecotypeList{a})(Gridding.stationsVec2,:)';
-ecotype_levels = [1e-3 1e-4];
-subplot(5,1,a)
-h1 = imagesc(x,y,z1)
-hold on
-[c,h2] = contour(x,y,z2./1e6,ecotype_levels);
-set(h2,'LineWidth',3,'ShowText','on','LineColor','w')
-clabel(c,h2,'FontSize',20,'Color','w')
-xlabel('Latitude')
-ylabel('Depth')
-colormap('jet')
-hc = colorbar
-ylabel(hc, 'Growth rate [h^-^1]')
-set(gca,'FontSize',20)
+    z1 = EcotypeSolution.(ecotypeList{a}).Growth;
+    z2 = CruiseData.(ecotypeList{a})(Gridding.stationsVec2,:)';
+    ecotype_levels = [1 10 1e2 1e3 1e4 1e5];
+    ecotype_levels = [1 1e2 1e4 1e5];
+
+    subplot(5,1,a)
+    h1 = imagesc(x,y,z1)
+    caxis([0 0.1]);
+    hold on
+    [c,h2] = contour(x,y,z2,ecotype_levels);
+    set(h2,'LineWidth',3,'ShowText','on','LineColor','w')
+    clabel(c,h2,'FontSize',20,'Color','w')
+    ylabel('Depth')
+    caxis([0 0.1]);
+    colormap('jet')
+    hc = colorbar
+    %ylabel(hc, 'Growth rate [h^-^1]')
+    set(gca,'FontSize',20)
+    if a < 5
+        set(gca,'XTick',[]);
+    else
+        xlabel('Latitude')
+    end
 end
 
 
+% population
+fig = figure
+z1 = PopulationSolution.Growth;
+z2 = CruiseData.Pro(Gridding.stationsVec2,:)';
+population_levels = [1e3 1e4 1e5 1.5e5];
+
+h1 = imagesc(x,y,z1)
+caxis([0 0.119]);
+hold on
+[c,h2] = contour(x,y,z2,population_levels);
+set(h2,'LineWidth',3,'ShowText','on','LineColor','w')
+clabel(c,h2,'FontSize',20,'Color','w')
+ylabel('Depth')
+caxis([0 0.119]);
+colormap('jet')
+hc = colorbar
+xlabel('Latitude')
+set(gca,'FontSize',20)
 
 
 

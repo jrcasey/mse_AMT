@@ -206,7 +206,7 @@ legend([h1(1) h2(1) h3(1) h4(1)],'dv-chlorophyll a','dv-chlorophyll b','\alpha-c
 set(gca,'FontSize',20)
 set(gca,'XTick',[])
 subplot(3,1,2:3)
-imagesc(Gridding.lambdaVec,y,2*IrrDat3(:,:,35))
+imagesc(Gridding.lambdaVec,Gridding.depthVec,2*IrrDat3(:,:,35))
 xlim([400 700])
 hc = colorbar
 xlabel('Wavelength [nm]')
@@ -219,18 +219,23 @@ set(gca,'FontSize',20)
 
 
 
-%% DIN with T overlay
+%% DIN with T and PAR overlay
 
-z1 = CruiseData.Ammonia(Gridding.stationsVec2,:)' + CruiseData.Nitrite(Gridding.stationsVec2,:)' + CruiseData.Nitrate(Gridding.stationsVec2,:)'
-z2 = CruiseData.T(Gridding.stationsVec2,:)'
-T_levels = [10 20 25];
-
+z1 = CruiseData.Ammonia(Gridding.stationsVec2,:)' + CruiseData.Nitrite(Gridding.stationsVec2,:)' + CruiseData.Nitrate(Gridding.stationsVec2,:)';
+z2 = CruiseData.T(Gridding.stationsVec2,:)';
+z3 = CruiseData.PAR(Gridding.stationsVec2,:)';
+T_levels = [10 15 20 25];
+PAR_levels = [1 10 100 1000];
 fig = figure
 h1 = imagesc(x,y,z1./1000)
 hold on
+[c2,h3] = contour(x,y,z3,PAR_levels);
 [c,h2] = contour(x,y,z2,T_levels);
 set(h2,'LineWidth',3,'ShowText','on','LineColor','w')
+set(h3,'LineWidth',3,'ShowText','on','LineColor','y')
+caxis([0 30]);
 clabel(c,h2,'FontSize',20,'Color','w')
+clabel(c2,h3,'FontSize',20,'Color','y')
 xlabel('Latitude')
 ylabel('Depth')
 colormap('jet')

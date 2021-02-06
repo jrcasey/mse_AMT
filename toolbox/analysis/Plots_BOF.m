@@ -216,32 +216,45 @@ for a = 1:Gridding.nStations
     P_int(a) = trapz(Gridding.depthVec,P); % mol m-2
 end
 
-% C:N
+cmap = [1 1 1; jet(256)];
 figure
+
+% C:N
+subplot(3,1,1)
 imagesc(x,y,QuotaPop(:,:,1) ./ QuotaPop(:,:,3))
-colorbar
-colormap('jet')
+hc = colorbar
+colormap(cmap)
 xlabel('Latitude')
 ylabel('Depth')
+ylabel(hc,'C:N [mol C (mol N)^-^1]')
 set(gca,'FontSize',20)
 
 % C:P
-figure
+subplot(3,1,2)
 imagesc(x,y,QuotaPop(:,:,1) ./ QuotaPop(:,:,5))
-colorbar
-colormap('jet')
+hc = colorbar
+colormap(cmap)
 xlabel('Latitude')
 ylabel('Depth')
+ylabel(hc,'C:P [mol C (mol P)^-^1]')
 set(gca,'FontSize',20)
-
+subplot(3,1,3)
+imagesc(x,y,QuotaPop(:,:,3) ./ QuotaPop(:,:,5))
+hc = colorbar
+colormap(cmap)
+xlabel('Latitude')
+ylabel('Depth')
+ylabel(hc,'N:P [mol N (mol P)^-^1]')
+set(gca,'FontSize',20)
 % C:Chl
 figure
 z = (2.*1e-3.*12.011.* QuotaPop(:,:,1)) ./ (PopulationSolution.BOF_coefs(:,:,12) + PopulationSolution.BOF_coefs(:,:,13)); 
 imagesc(x,y,z)
-colorbar
-colormap('jet')
+hc = colorbar
+colormap(cmap)
 xlabel('Latitude')
 ylabel('Depth')
+ylabel(hc,'C:Chl [g C (g dv-Chl)^-^1]')
 set(gca,'FontSize',20)
 
 
@@ -314,7 +327,8 @@ z = (4/3) .* pi() .* PopulationSolution.r_opt.^3 .* 280; % fg C cell-1
 imagesc(x,y,z)
 hc=colorbar
 ylabel(hc,'Cell size (fg C cell^-^1')
-colormap('jet')
+cmap = [1 1 1; jet(256)];
+colormap(cmap)
 xlabel('Latitude')
 ylabel('Depth')
 set(gca,'FontSize',20)

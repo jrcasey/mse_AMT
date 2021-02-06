@@ -18,7 +18,7 @@ cd /Users/jrcasey/Documents/MATLAB/GitHub/mse_AMT/
 addpath(genpath('/Users/jrcasey/Documents/MATLAB/GitHub/mse_AMT/'))
 
 % Point to solutions directory
-ResultsDirectory = '/Users/jrcasey/Documents/MATLAB/CBIOMES/Data/Environmental_Data/Cruises/AMT13/Solution_20201123/';
+ResultsDirectory = '/Users/jrcasey/Documents/MATLAB/CBIOMES/Data/Environmental_Data/Cruises/AMT13/Solution_20200914/';
 
 % load specifics about the run
 load('data/output/Gridding.mat');

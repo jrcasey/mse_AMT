@@ -32,6 +32,8 @@ for i = 1:numel(ecotypeList)
 end
 ecotypeList2 = [{'HLI'},{'HLII'},{'LLI'},{'LLII/LLIII'},{'LLIV'}];
 
+% Color palate for ecotypes
+ecotypeColors = varycolor(numel(ecotypeList));
 
 %% Primary production
 
@@ -153,6 +155,44 @@ ylabel('Depth')
 set(gca,'FontSize',20)
 
 
+
+
+%% Photosynthesis reactions
+
+rxnIdx1 = find(strcmp('R09503',FullSolution_L2.PanGEM.rxns));
+rxnIdx2 = find(strcmp('R09542pc',FullSolution_L2.PanGEM.rxns));
+fig=figure
+for a = 1:numel(ecotypeList)
+    subplot(2,3,a)
+    z = EcotypeSolution.(ecotypeList{a}).Fluxes(:,:,rxnIdx1);
+    %z = EcotypeSolution.(ecotypeList{a}).Fluxes(:,:,rxnIdx1) ./ EcotypeSolution.(ecotypeList{a}).Fluxes(:,:,rxnIdx2)
+    imagesc(x,y,z)
+    xlabel('Latitude')
+    ylabel('Depth');
+    colorbar
+    colormap('jet')
+    set(gca,'FontSize',20)
+end
+
+rxnIdx1 = find(strcmp('LightTRANS',FullSolution_L2.PanGEM.rxns));
+fig = figure
+for a = 1:numel(ecotypeList)
+    z = EcotypeSolution.(ecotypeList{a}).Fluxes(:,:,rxnIdx1);
+    z = EcotypeSolution.(ecotypeList{a}).Fluxes(:,:,rxnIdx1) ./ EcotypeSolution.(ecotypeList{a}).Fluxes(:,:,rxnIdx2)
+    plot(CruiseData.PAR(Gridding.stationsVec2,:)',z,'.','MarkerSize',15,'MarkerFaceColor',ecotypeColors(a,:),'MarkerEdgeColor',ecotypeColors(a,:));
+    hold on
+    
+end
+set(gca,'XScale','log')
+
+%% alpha-car absorption fraction
+for a = 1:Gridding.nStr
+    aCar_fraction(:,:,a) = FullSolution_L2.(Gridding.strNameVec{a}).pigAbs(:,:,3) ./ (FullSolution_L2.(Gridding.strNameVec{a}).pigAbs(:,:,1) + FullSolution_L2.(Gridding.strNameVec{a}).pigAbs(:,:,2) + FullSolution_L2.(Gridding.strNameVec{a}).pigAbs(:,:,3));
+end
+
+for a = 1:numel(strEco_idx)
+    aCar_fraction_ecoMean(:,:,a) = nanmean(aCar_fraction(:,:,strEco_idx{a}),3);
+end
 
 
 

@@ -41,7 +41,7 @@ ecotypeList2 = [{'HLI'},{'HLII'},{'LLI'},{'LLII/LLIII'},{'LLIV'}];
 figure
 subplot(2,1,1)
 imagesc(x,y,CruiseData.Ammonia(Gridding.stationsVec2,:)')
-set(gca,'clim',[0 60])
+set(gca,'clim',[0 80])
 xlabel('Latitude')
 ylabel('Depth')
 set(gca,'FontSize',20)
@@ -52,6 +52,7 @@ subplot(2,1,2)
 z = PopulationSolution.S_star(:,:,1);
 z(find(~z)) = NaN;
 imagesc(x,y,1e6*z)
+set(gca,'clim',[0 80])
 xlabel('Latitude')
 ylabel('Depth')
 set(gca,'FontSize',20)
@@ -137,6 +138,11 @@ colormap('jet')
 TpDat = readtable(FullSolution.FileNames.TpDat_fileName,'ReadVariableNames',true,'Delimiter',',');
 S_vec = logspace(-6,-1,100);
 f_max = 0.085; % Maximum fraction of the cell surface that can be covered by transporters... wonkiest term in here. See text for a discussion of n_max.
+tempSol = solveLP(FullSolution.PanGEM,1);
+tempVmax = -tempSol.x(find(strcmp('AmmoniaTRANS',FullSolution.PanGEM.rxns)));
+Vmax_cell_n = tempVmax .* (1/1000) .* (1/3600) .* (100e-15); % mol cell-1 s-1
+tempVmax = -tempSol.x(find(strcmp('OrthophosphateTRANS',FullSolution.PanGEM.rxns)));
+Vmax_cell_p = tempVmax .* (1/1000) .* (1/3600) .* (100e-15); % mol cell-1 s-1
 
 % Nitrate
 D = getDiffusivity(TpDat.TpMets_MW(3),25);
@@ -147,7 +153,7 @@ mtc = D./r;
 % capture probability
 alpha = ( (mtc).*sqrt(pi()*A) ) ./ (4*D); % dimensionless
 ks_p = ( (pi() .* kcat) ./ (4*alpha .* A .* D) ) .* sqrt(A./pi()); % moles m-3
-nG = 49;
+nG = Vmax_cell_n./kcat
 n_star_D = 4*pi()*r*D.*S_vec ./ kcat;
 n_star_G = ( ks_p + S_vec ) ./ ( (S_vec ./ nG) - (kcat./(D.*r)) )
 
@@ -167,7 +173,7 @@ mtc = D./r;
 % capture probability
 alpha = ( (mtc).*sqrt(pi()*A) ) ./ (4*D); % dimensionless
 ks_p = ( (pi() .* kcat) ./ (4*alpha .* A .* D) ) .* sqrt(A./pi()); % moles m-3
-nG = 49;
+nG = Vmax_cell_n./kcat
 n_star_D = 4*pi()*r*D.*S_vec ./ kcat;
 n_star_G = ( ks_p + S_vec ) ./ ( (S_vec ./ nG) - (kcat./(D.*r)) )
 
@@ -186,7 +192,7 @@ mtc = D./r;
 % capture probability
 alpha = ( (mtc).*sqrt(pi()*A) ) ./ (4*D); % dimensionless
 ks_p = ( (pi() .* kcat) ./ (4*alpha .* A .* D) ) .* sqrt(A./pi()); % moles m-3
-nG = 80;
+nG = Vmax_cell_n./kcat
 n_star_D = 4*pi()*r*D.*S_vec ./ kcat;
 n_star_G = ( ks_p + S_vec ) ./ ( (S_vec ./ nG) - (kcat./(D.*r)) )
 
@@ -205,7 +211,7 @@ mtc = D./r;
 % capture probability
 alpha = ( (mtc).*sqrt(pi()*A) ) ./ (4*D); % dimensionless
 ks_p = ( (pi() .* kcat) ./ (4*alpha .* A .* D) ) .* sqrt(A./pi()); % moles m-3
-nG = 55;
+nG = Vmax_cell_p./kcat
 n_star_D = 4*pi()*r*D.*S_vec ./ kcat;
 n_star_G = ( ks_p + S_vec ) ./ ( (S_vec ./ nG) - (kcat./(D.*r)) )
 
@@ -262,7 +268,7 @@ mtc = D./r;
 % capture probability
 alpha = ( (mtc).*sqrt(pi()*A) ) ./ (4*D); % dimensionless
 ks_p = ( (pi() .* kcat) ./ (4*alpha .* A .* D) ) .* sqrt(A./pi()); % moles m-3
-nG = 80;
+nG = Vmax_cell_n./kcat
 n_star_D = 4*pi()*r*D.*S_vec ./ kcat;
 n_star_G = ( ks_p + S_vec ) ./ ( (S_vec ./ nG) - (kcat./(D.*r)) )
 

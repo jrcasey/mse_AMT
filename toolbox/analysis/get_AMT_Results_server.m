@@ -76,7 +76,8 @@ end
 
 %% Loop through each file
 % Store solution data in FullSolution structure
-for a = 1:nFiles
+%for a = 1:nFiles
+for a = 22316:nFiles
     % Load a solution
     load(strcat(ResultsDirectory,files(a).name)); % Will be called Solution, so it'll write over the template solution loaded above
     if isfield(Solution,'Fluxes')
@@ -110,7 +111,7 @@ for a = 1:nFiles
     else
         FullSolution.(Solution.strName).StrMod4_growth(j,i) = Solution.StrMod4_growth;
     end
-    FullSolution.(Solution.strName).StrMod5_growth(j,i) = Solution.StrMod5_growth;
+    FullSolution.(Solution.strName).StrMod5_growth(j,i) = Solution.StrMod5_growth(1);
     end
 end
 

@@ -169,6 +169,18 @@ for a = 1:Gridding.nStr
     
 end
 
+%% Flux consistency
+% Some issue has been found where non-zero fluxes are associated with
+% reactions which are not actually present. Let's loop through and zero
+% these out
+load('/Users/jrcasey/Documents/MATLAB/GitHub/mse_AMT/data/GEM/StrMod.mat');
+for a = 1:Gridding.nStr
+    % get indices of zero entries in S
+    z_idx = find(sum(abs(StrMod.(Gridding.strNameVec{a}).S),1)==0);
+    % assign zero flux to corresponding fluxes
+    FullSolution.(Gridding.strNameVec{a}).Fluxes(:,:,z_idx) = 0;
+end
+
 %% Save output
 FullSolution_L2 = FullSolution;
 save('/Users/jrcasey/Documents/MATLAB/GitHub/mse_AMT/data/output/FullSolution_L2.mat','FullSolution_L2');
