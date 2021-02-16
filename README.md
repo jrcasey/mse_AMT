@@ -6,11 +6,14 @@ The impact of physiological acclimation on fitness can be substantial. Below is 
 
 ![FitnessGains](/docs/images/FitnessGains.jpg)
 
-### MSE Pipeline
-This distribution (mse_AMT) includes a complete dataset for you to try out, since there is quite a bit of fairly specialized experimental data that are needed. The MSE pipeline is implemented in several sequential steps
+### Citation
+*Coming soon (with any luck)*
 
-1. A GEM is loaded
-2. Environmental parameters are parsed. These currently include temperature, light (spectral downwelling irradiance), and nutrients (ammonia, nitrite, nitrate, phosphate). 
+### MSE Pipeline
+This distribution (mse_AMT) includes a complete dataset for you to try out, since there is quite a bit of fairly specialized experimental data that are needed. MSE is compatible with the [PanGEM Toolbox](https://github.com/jrcasey/PanGEM), which generates strain-specific GEMs from a pangenome. The MSE pipeline is implemented in several sequential steps:
+
+1. Load a strain GEM.
+2. Parse environmental parameters. These currently include temperature, light (spectral downwelling irradiance), and nutrients (ammonia, nitrite, nitrate, phosphate). 
 3. Specification of the GEM. Assigns initial physiological parameters from experimental data collected during exponential growth in 'optimal' laboratory growth conditions (i.e., nutrient replete, optimal temperature, optimal light). These data include cell size, macromolecular compositions, metabolomics, DNA and RNA base stoichiometry, maximum photosynthetic rates, transporter abundances from quantitative proteomics, growth and non-growth associated maintenance ATP requirements, and pigment concentrations.
 4. Specification of constraints. Constraints include upper and lower bounds on cell size, macromolecular compositions, and pigment concentrations and pigment ratios. Upper bounds on cell size set upper bounds on nutrient transporter abundances, based on available membrane surface area.   
 5. Nutrient transport optimization (OptTrans). Adjusts membrane transporter abundance and cell size to maximize growth rate. Based on the model of [Casey and Follows, 2020](https://jrcasey.github.io/assets/docs/CaseyFollows2020.pdf).
@@ -28,6 +31,6 @@ Dependencies: [RAVEN 2.0](https://github.com/SysBioChalmers/RAVEN/wiki)\*, [Mose
 2. Add to MATLAB path: `addpath(genpath(path/to/mse_AMT/));`
 3. Two options to run MSE: Locally: open `mse_AMT/toolbox/wrappers/AMT_Wrapper.m`, specify options, gridding, and filenames. Choose a station, depth, and strain ID and run. On a cluster: Specify options, gridding, and filenames in `mse_AMT/toolbox/wrappers/AMT_Wrapper.m`. Specify job loop parameters for SLURM array in `Job_loop.sh` Run SLURM array using `sh Job_loop.sh`
 
-*\*You will need to sign up for a free academic license for Mosek. Not painless, unfortunately. If you plan to run mse_AMT on a cluster, you will need to install on the server, place the license in the Mosek directory, and make sure the solver is working by running the included test `mse_AMT/test/mosekdiag.m`*
+*\*You will need to sign up for a free academic license for Mosek. Not painless, unfortunately. If you plan to run mse_AMT on a cluster, you will need to install on the server, place the license in the Mosek directory, and make sure the solver is working by running the included test `mse_AMT/test/mosekdiag.m`. Also, please be sure to check for any licensing requirements with Mosek before installing on a server.*
 
 
