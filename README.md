@@ -4,7 +4,7 @@ The Microbial Simulation Environment (MSE) is a MATLAB toolbox for the simulatio
   
 The impact of physiological acclimation on fitness can be substantial. Below is a histogram of the relative increase in growth rates for a collection of 69 strains of a cyanobacterial genus *Prochlorococcus* along a meridional section of the North and South Atlantic Oceans:
 
-![FitnessGains](/docs/images/FitnessGains.jpg)
+![FitnessGains](https://github.com/jrcasey/mse_AMT/blob/master/docs/images/FitnessGains.jpg?raw=true)
 
 ### MSE Pipeline
 This distribution (mse_AMT) includes a complete dataset for you to try out, since there is quite a bit of fairly specialized experimental data that are needed. The MSE pipeline is implemented in several sequential steps
