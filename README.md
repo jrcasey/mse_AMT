@@ -2,7 +2,7 @@
 
 The Microbial Simulation Environment (MSE) is a MATLAB toolbox for the simulation of genome-scale metabolic models (GEMs) in the natural environment. It was designed to relax the static parameterizations of cell physiology typical of standard flux balance analysis (FBA) simulations, by allowing for cellular acclimation processes (nutrient transport, photoacclimation, macromolecular allocation) which are important under environmental conditions which depart from 'optimal' laboratory growth conditions. 
   
-The impact of physiological acclimation on fitness can be substantial. Below is a histogram of the relative increase in growth rates for a collection of 69 strains of a cyanobacterial genus *Prochlorococcus* along a meridional section of the North and South Atlantic Oceans:
+The impact of physiological acclimation on fitness can be substantial. Below is a histogram of the relative increase in growth rates due to acclimation (see MSE Pipeline section below) for a collection of 69 strains of a cyanobacterial genus *Prochlorococcus* along a meridional section of the North and South Atlantic Oceans:
 
 ![FitnessGains](/docs/images/FitnessGains.jpg)
 
