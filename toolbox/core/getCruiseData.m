@@ -2,10 +2,6 @@ function CruiseDat = getCruiseData(CruiseDB, depthVec)
 %% Standardize AMT Data
 
 Data = CruiseDB;
-% target fields (nutrients and cell counts for now)
-% varNames = [{'Nitrate'},{'Nitrite'},{'Ammonia'},{'Orthophosphate'},{'Fe2'},...
-%     {'Zn2'},{'Cadmium'},{'Ni'},{'Copper'},{'Pb'},{'Mn'},{'Cobalt_ion'},...
-%     {'Pro'},{'Syn'},{'Euk'},{'Hbac'}];
 
 varNames = Data.Properties.VariableNames(6:end); % just the nutrients for now
 % Find and index stations
@@ -29,18 +25,15 @@ for i = 1:nStations
         x(nanInd) = [];
         v(nanInd) = [];
         if numel(find(~isnan(v)))<3
-            %nuts(i,j,:) = zeros(numel(depthVec),1);
             CruiseDat.(varNames{j})(i,:) = zeros(numel(depthVec),1);
         else
         vq = interp1(x,v,depthVec,'linear');
-        %nuts(i,j,:) = vq;
         CruiseDat.(varNames{j})(i,:) = vq;
         end
     end
     CruiseDat.Lat(i) = Data.Lat(station_ind{i}(1));
     CruiseDat.Lon(i) = Data.Lon(station_ind{i}(1));
     CruiseDat.Date(i) = Data.Date(station_ind{i}(1));
-    %CruiseDat.SLA(i) = Data.SLA_cm(station_ind{i}(1));
 end
 
 % Change some units to nM
